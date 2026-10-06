@@ -1,0 +1,41 @@
+/* ###
+ * Builds the FidDb Manager Ghidra extension.
+ *
+ *   gradle -PGHIDRA_INSTALL_DIR=D:\ghidra_12.1.4_PUBLIC
+ *
+ * or set the GHIDRA_INSTALL_DIR environment variable. The installable zip is written to dist\.
+ */
+
+//----------------------START "DO NOT MODIFY" SECTION------------------------------
+def ghidraInstallDir
+
+if (System.env.GHIDRA_INSTALL_DIR) {
+	ghidraInstallDir = System.env.GHIDRA_INSTALL_DIR
+}
+else if (project.hasProperty("GHIDRA_INSTALL_DIR")) {
+	ghidraInstallDir = project.getProperty("GHIDRA_INSTALL_DIR")
+}
+else {
+	ghidraInstallDir = "<path to ghidra install>"
+}
+
+task distributeExtension {
+	group = "Ghidra"
+
+	apply from: new File(ghidraInstallDir).getCanonicalPath() + "/support/buildExtension.gradle"
+	dependsOn ':buildExtension'
+}
+//----------------------END "DO NOT MODIFY" SECTION-------------------------------
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// No external dependencies - everything comes from the Ghidra installation.
+}
+
+// Exclude additional files from the built extension
+buildExtension.exclude '.gradle/**'
+buildExtension.exclude 'build/**'
+buildExtension.exclude 'dist/**'
